@@ -18,7 +18,11 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+     "baseUrl": "src", // 프로젝트의 기본 경로를 설정
+    "paths": {
+      "@/*": ["*"], // 별칭 설정
+    }
   },
   "include": [
     "src"
