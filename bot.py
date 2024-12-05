@@ -8,6 +8,10 @@ intents = discord.Intents.default()
 intents.message_content = True  # 메시지 콘텐츠 접근 허용
 bot = commands.Bot(command_prefix='!', intents=intents)
 
+m_dict = {
+
+}
+
 
 # 봇이 준비되었을 때
 @bot.event
@@ -22,9 +26,25 @@ async def hello(ctx):
 
 
 @bot.command()
+async def m(ctx, *, user_input: str):
+    if ctx.author.name == "brony2684":
+        d = m_dict.get(ctx.author.name, [])
+        d.append(user_input)
+        m_dict[ctx.author.name] = d
+
+
+@bot.command()
+async def mc(ctx, *, user_input: str):
+    if ctx.author.name == "brony2684":
+        m_dict[ctx.author.name] = []
+
+
+@bot.command()
 async def c(ctx, *, user_input: str):
     if ctx.author.name == "brony2684":
-        gpt.add_message(role='user', message=user_input)
+        messages = m_dict.get(ctx.author.name, [])
+        messages.append(user_input)
+        gpt.add_message(role='user', message=' '.join(messages))
         ret = gpt.compilation()
         await ctx.send(ret)
         return
