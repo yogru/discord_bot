@@ -27,7 +27,7 @@ async def hello(ctx):
 
 @bot.command()
 async def m(ctx, *, user_input: str):
-    if ctx.author.name == "brony2684":
+    if ctx.author.name in ["brony2684", 'flairth']:
         d = m_dict.get(ctx.author.name, [])
         d.append(user_input)
         m_dict[ctx.author.name] = d
@@ -35,13 +35,13 @@ async def m(ctx, *, user_input: str):
 
 @bot.command()
 async def mc(ctx):
-    if ctx.author.name == "brony2684":
+    if ctx.author.name in ["brony2684", 'flairth']:
         m_dict[ctx.author.name] = []
 
 
 @bot.command()
 async def c(ctx, *, user_input: str):
-    if ctx.author.name == "brony2684":
+    if ctx.author.name in ["brony2684", 'flairth']:
         prompt_list = m_dict.get(ctx.author.name, [])
         messages = prompt_list.copy()
         messages.append(user_input)
