@@ -34,7 +34,7 @@ async def m(ctx, *, user_input: str):
 
 
 @bot.command()
-async def mc(ctx, *, user_input: str):
+async def mc(ctx):
     if ctx.author.name == "brony2684":
         m_dict[ctx.author.name] = []
 
