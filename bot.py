@@ -42,7 +42,8 @@ async def mc(ctx, *, user_input: str):
 @bot.command()
 async def c(ctx, *, user_input: str):
     if ctx.author.name == "brony2684":
-        messages = m_dict.get(ctx.author.name, [])
+        prompt_list = m_dict.get(ctx.author.name, [])
+        messages = prompt_list.copy()
         messages.append(user_input)
         gpt.add_message(role='user', message=' '.join(messages))
         ret = gpt.compilation()
