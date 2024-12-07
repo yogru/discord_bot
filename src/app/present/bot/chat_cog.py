@@ -1,7 +1,8 @@
 import discord
 from discord.ext import commands
 
-from src.dependencies import gpt
+from src.dependencies import gpt, auth_use_case
+from src.domain.model import UserGrantEnum
 
 
 class ChatCog(commands.Cog):
@@ -10,6 +11,10 @@ class ChatCog(commands.Cog):
 
     @commands.command(name='chat', aliases=['c'], help='{chat, c} 챗봇 기능')
     async def chat(self, ctx, *, user_input: str):
+        auth_use_case.check_grant(
+            user_id=ctx.author.name,
+            grant_enum=UserGrantEnum.USE_CHAT_BOT
+        )
         gpt.add_message(role='user', message=user_input)
         ret = gpt.compilation()
         await ctx.send(ret)

@@ -17,6 +17,10 @@ class UserKindEnum(str, Enum):
 class UserGrantEnum(str, Enum):
     USE_CHAT_BOT = 'use_chat_bot'
 
+    def get_ko_str(self) -> str:
+        if self == UserGrantEnum.USE_CHAT_BOT:
+            return "챗봇 사용 권한(use_chat_bot)"
+
 
 class UserEntity(BaseTable):
     __tablename__ = "user_entity"
@@ -38,6 +42,12 @@ class UserEntity(BaseTable):
             if grant.equal_enum(grant_enum):
                 return grant
         return None
+
+    def check_grant(self, grant_enum: UserGrantEnum) -> bool:
+        found_grant = self.find_grant(grant_enum)
+        if found_grant:
+            return True
+        return False
 
     def add_grant(self, grant_enum: UserGrantEnum) -> 'UserGrantEntity':
         found_grant = self.find_grant(grant_enum)
