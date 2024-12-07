@@ -35,6 +35,6 @@ class FileRepository(SqlAlchemyBaseRepository):
                 ])
             )
             .order_by(FileEntity.created_at.desc())
-            .limit(10)  # 최대 10개 가져오기
+            .limit(4)
             .all()
         )

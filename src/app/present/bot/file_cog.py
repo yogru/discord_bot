@@ -1,6 +1,8 @@
 import os
 
+import discord
 from discord.ext import commands
+from discord.ui import Button, View
 
 from src.dependencies import file_use_case
 from src.domain.model import FileStorageEnum
@@ -43,8 +45,9 @@ class FileCog(commands.Cog):
         if not tags:
             await ctx.send(f"태그를 지정 해주세요")
             return
-        urls = file_use_case.get_url(tags=tags)
-        await ctx.send(f"{" ".join(urls)}")
+        image_urls = file_use_case.get_url(tags=tags)
+        # 이미지 리스트 생성
+        await ctx.send(f"{image_urls[0]}\n")
 
 
 async def setup(bot):
