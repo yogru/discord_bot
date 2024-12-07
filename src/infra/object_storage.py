@@ -17,11 +17,11 @@ class MinIoWrapper:
         )
 
     def get_os_base_url(self) -> str:
-        return f"{self.env.OS_URL}/{self.env.OS_BUCKET}"
+        return f"https://os.kyb.pe.kr/{self.env.OS_BUCKET}"
 
     def get_public_url(self, filename: str) -> str:
         base_url = self.get_os_base_url()
-        return f"https://{base_url}/{filename}"
+        return f"{base_url}/{filename}"
 
     def upload(self, upload_name: str, local_file_path: str):
         try:
