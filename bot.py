@@ -71,6 +71,7 @@ async def on_ready():
 
 async def load_cogs():
     # Cog 동적 로드
+    await bot.load_extension('src.app.present.bot.file_cog')
     await bot.load_extension('src.app.present.bot.user_cog')
     await bot.load_extension('src.app.present.bot.chat_cog')
     await bot.load_extension('src.app.present.bot.help_cog')

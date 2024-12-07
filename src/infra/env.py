@@ -28,6 +28,12 @@ class EnvSettings(BaseSettings):
     DATABASE_AUTO_COMMIT: bool = False
     DATABASE_AUTO_FLUSH: bool = False
 
+    ## object storage
+    OS_URL: str
+    OS_ACCESS_KEY: str
+    OS_SECRET_KEY: str
+    OS_SECURE: bool = True
+
     @staticmethod
     def load_env(app_mode: EnvironmentType = g_app_mode) -> "EnvSettings":
         target_env_file = f".env.{app_mode}"

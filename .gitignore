@@ -1,3 +1,4 @@
 .env.prod
 .env.local
 .idea
+./downloads
