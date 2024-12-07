@@ -12,7 +12,12 @@ bot = commands.Bot(command_prefix='!', intents=intents, help_command=None)
 
 @bot.event
 async def on_command_error(ctx, error):
-    await ctx.send(f"에러 발생 했습니다: {str(error)}")
+    if isinstance(error, commands.CommandInvokeError) and isinstance(error.original, RuntimeError):
+        # RuntimeError의 메시지 추출
+        await ctx.send(f"에러 발생 했습니다. {str(error.original)}")
+    else:
+        # 기타 에러 처리
+        await ctx.send(f"알 수 없는 에러가 발생했습니다: {str(error)}")
 
 
 # 봇이 준비되었을 때

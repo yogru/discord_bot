@@ -15,6 +15,7 @@ fastapi = {extras = ["standard"], version = "^0.115.6"}
 sqlalchemy = "^2.0.36"
 psycopg2-binary = "^2.9.10"
 passlib = "^1.7.4"
+pynacl = "^1.5.0"
 
 
 [build-system]

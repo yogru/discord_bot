@@ -12,7 +12,7 @@ class UserUseCase:
     def create_user(self, user_id: str, password: str) -> CreatedUser:
         with self.uow:
             found_user = self.uow.users.get(user_id)
-            if not found_user:
+            if found_user:
                 raise RuntimeError(f'이미 존재하는 계정')
 
             hashed_password = self.bcrypt.hash_password(password)

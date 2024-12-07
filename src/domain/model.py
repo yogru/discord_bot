@@ -7,11 +7,18 @@ from src.infra.db import StringifiedEnum, BaseEntity, BaseTable
 
 
 ## user ################################################################################################################
+
+class UserKindEnum(str, Enum):
+    ADMIN = 'admin'
+    CLIENT = 'client'
+
+
 class UserEntity(BaseTable):
-    __tablename__ = "user"
+    __tablename__ = "user_entity"
 
     id: str = Column(String, primary_key=True)
     password: str = Column(String, nullable=False)
+    kind: UserKindEnum = Column(StringifiedEnum(UserKindEnum), nullable=False, default=UserKindEnum.CLIENT)
     created_at = Column(DateTime, server_default=func.now(), nullable=False)
     updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now(), nullable=False)
     grants = relationship("UserGrantEntity", back_populates="user", cascade="all, delete-orphan")
@@ -25,7 +32,7 @@ class UserGrantEntity(BaseTable):
     __tablename__ = "user_grant"
 
     id: str = Column(StringifiedEnum(UserGrantEnum), primary_key=True)  # 권한 고유 ID
-    user_id = Column(String, ForeignKey("user.id", ondelete="CASCADE"), nullable=False)  # UserEntity와 연결
+    user_id = Column(String, ForeignKey("user_entity.id", ondelete="CASCADE"), nullable=False)  # UserEntity와 연결
     # UserEntity와의 관계 설정
     user = relationship("UserEntity", back_populates="grants")
 
@@ -78,7 +85,7 @@ class FileEntity(BaseTable):
     url = Column(String, nullable=False)
 
     # UserEntity와의 관계 설정
-    user_id = Column(String, ForeignKey("user.id", ondelete="CASCADE"), nullable=False)
+    user_id = Column(String, ForeignKey("user_entity.id", ondelete="CASCADE"), nullable=False)
     user = relationship("UserEntity")
 
     def is_ext(self, ext: FileExtEnum) -> bool:
