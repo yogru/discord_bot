@@ -6,7 +6,7 @@ class HelpCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(name='help')
+    @commands.command(name='help', aliases=['h'], help='{help, h} 조회 기능')
     async def custom_help(self, ctx):
         # 명령어 목록 생성
         commands_list = []
@@ -19,3 +19,7 @@ class HelpCog(commands.Cog):
         embed = discord.Embed(title="Help - Available Commands", color=discord.Color.blue())
         embed.description = "\n".join(commands_list)
         await ctx.send(embed=embed)
+
+
+async def setup(bot):
+    await bot.add_cog(HelpCog(bot))

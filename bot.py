@@ -1,19 +1,13 @@
+import asyncio
+
 import discord
 from discord.ext import commands
-from discord.ext.commands import Cog
-
-from src.app.present.bot.help_cog import HelpCog
-from src.app.present.bot.user_cog import UserCog
 from src.dependencies import env, gpt
 
 # 봇 초기화
 intents = discord.Intents.default()
 intents.message_content = True  # 메시지 콘텐츠 접근 허용
 bot = commands.Bot(command_prefix='!', intents=intents, help_command=None)
-
-m_dict = {
-
-}
 
 
 @bot.event
@@ -27,46 +21,60 @@ async def on_ready():
     print(f'Logged in as {bot.user}!')
 
 
-# 간단한 명령어 추가
-@bot.command()
-async def hello(ctx):
-    await ctx.send(f'Hello, {ctx.author.name}!')
+# m_dict = {
+#
+# }
+
+# # 간단한 명령어 추가
+# @bot.command()
+# async def hello(ctx):
+#     await ctx.send(f'Hello, {ctx.author.name}!')
+#
+#
+# @bot.command()
+# async def m(ctx, *, user_input: str):
+#     if ctx.author.name in ["brony2684", 'flairth']:
+#         d = m_dict.get(ctx.author.name, [])
+#         d.append(user_input)
+#         m_dict[ctx.author.name] = d
+#
+#
+# @bot.command()
+# async def mc(ctx):
+#     if ctx.author.name in ["brony2684", 'flairth']:
+#         m_dict[ctx.author.name] = []
+#
+#
+# @bot.command()
+# async def c(ctx, *, user_input: str):
+#     if ctx.author.name in ["brony2684", 'flairth']:
+#         prompt_list = m_dict.get(ctx.author.name, [])
+#         messages = prompt_list.copy()
+#         messages.append(user_input)
+#         gpt.add_message(role='user', message=' '.join(messages))
+#         ret = gpt.compilation()
+#         await ctx.send(ret)
+#         return
+#     await ctx.send(f'선생님 돈내세요, {ctx.author.name}!')
+#
+#
+# @bot.command()
+# async def k(ctx):
+#     image_url = 'https://cdn.discordapp.com/attachments/1064150890761691159/1313424686587052032/IMG_3133.webp?ex=6750158f&is=674ec40f&hm=b3173fe15dc33f799b15633b63f30dd4191b32c88880dde331b8ab446d407689&'
+#     await ctx.send(image_url)
 
 
-@bot.command()
-async def m(ctx, *, user_input: str):
-    if ctx.author.name in ["brony2684", 'flairth']:
-        d = m_dict.get(ctx.author.name, [])
-        d.append(user_input)
-        m_dict[ctx.author.name] = d
+async def load_cogs():
+    # Cog 동적 로드
+    await bot.load_extension('src.app.present.bot.user_cog')
+    await bot.load_extension('src.app.present.bot.chat_cog')
+    await bot.load_extension('src.app.present.bot.help_cog')
 
 
-@bot.command()
-async def mc(ctx):
-    if ctx.author.name in ["brony2684", 'flairth']:
-        m_dict[ctx.author.name] = []
+async def main():
+    async with bot:
+        await load_cogs()  # Cog 로드
+        await bot.start(env.BOT_KEY)
 
 
-@bot.command()
-async def c(ctx, *, user_input: str):
-    if ctx.author.name in ["brony2684", 'flairth']:
-        prompt_list = m_dict.get(ctx.author.name, [])
-        messages = prompt_list.copy()
-        messages.append(user_input)
-        gpt.add_message(role='user', message=' '.join(messages))
-        ret = gpt.compilation()
-        await ctx.send(ret)
-        return
-    await ctx.send(f'선생님 돈내세요, {ctx.author.name}!')
-
-
-@bot.command()
-async def k(ctx):
-    image_url = 'https://cdn.discordapp.com/attachments/1064150890761691159/1313424686587052032/IMG_3133.webp?ex=6750158f&is=674ec40f&hm=b3173fe15dc33f799b15633b63f30dd4191b32c88880dde331b8ab446d407689&'
-    await ctx.send(image_url)
-
-
-bot.add_cog(UserCog(bot))
-bot.add_cog(HelpCog(bot))
-# 봇 실행
-bot.run(env.BOT_KEY)
+asyncio.run(main())
