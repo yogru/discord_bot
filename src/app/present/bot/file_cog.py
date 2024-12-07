@@ -1,4 +1,9 @@
+import os
+
 from discord.ext import commands
+
+from src.dependencies import file_use_case
+from src.domain.model import FileStorageEnum
 
 
 class FileCog(commands.Cog):
@@ -12,15 +17,25 @@ class FileCog(commands.Cog):
         if not tags:
             await ctx.send(f"태그를 지정 해주세요")
             return
-
         if not ctx.message.attachments:
-            await ctx.send("No file attached!")
+            await ctx.send("파일을 첨부 하세요")
             return
         attachment = ctx.message.attachments[0]
-        save_path = f"./downloads/{attachment.filename}"
+        filename = attachment.filename
+        save_path = f"./downloads/{filename}"
         # 파일 다운로드 및 저장
         await attachment.save(save_path)
-        await ctx.send(f"`{attachment.filename}` 로컬로 저장 되었습니다.")
+        await ctx.send(f"`{filename}` 로컬로 저장 되었습니다.")
+        file_use_case.upload_file(
+            user_id=ctx.author.name,
+            filename=filename,
+            saved_path=save_path,
+            tags=tags,
+            storage=FileStorageEnum.MIN_IO,
+            url=None
+        )
+        await ctx.send(f"`{filename}` 파일 서버로 저장 되었습니다.")
+        os.remove(save_path)
 
 
 async def setup(bot):

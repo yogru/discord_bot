@@ -2,7 +2,7 @@ from typing import Optional
 
 from sqlalchemy.orm import Session, joinedload
 
-from src.domain.model import UserEntity
+from src.domain.model import UserEntity, FileEntity
 from src.infra.db import SqlAlchemyBaseRepository
 
 
@@ -17,3 +17,8 @@ class UserRepository(SqlAlchemyBaseRepository):
             .options(joinedload(UserEntity.grants))
             .first()
         )
+
+
+class FileRepository(SqlAlchemyBaseRepository):
+    def __init__(self, session: Session):
+        super().__init__(session, FileEntity)

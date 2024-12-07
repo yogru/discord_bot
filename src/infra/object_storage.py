@@ -16,6 +16,13 @@ class MinIoWrapper:
             secure=self.env.OS_SECURE  # HTTPS를 사용하지 않을 경우 False
         )
 
+    def get_os_base_url(self) -> str:
+        return f"{self.env.OS_URL}/{self.env.OS_BUCKET}"
+
+    def get_public_url(self, filename: str) -> str:
+        base_url = self.get_os_base_url()
+        return f"{base_url}/{filename}"
+
     def upload(self, upload_name: str, local_file_path: str):
         try:
             self.client.fput_object(

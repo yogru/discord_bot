@@ -30,6 +30,7 @@ class EnvSettings(BaseSettings):
 
     ## object storage
     OS_URL: str
+    OS_BUCKET: str
     OS_ACCESS_KEY: str
     OS_SECRET_KEY: str
     OS_SECURE: bool = True

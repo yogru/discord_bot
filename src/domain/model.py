@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Optional
+from typing import Optional, List
 
 from sqlalchemy import Column, String, func, DateTime, ForeignKey, Integer
 from sqlalchemy.orm import relationship
@@ -80,14 +80,11 @@ class FileStatusEnum(str, Enum):
     REMOVE = 'remove'
 
 
-class FileExtEnum(str, Enum):
-    PNG = 'png'
-    JPEG = 'jpeg'
-
-
 class FileStorageEnum(str, Enum):
     LOCAL = 'local'
     S3 = "s3"
+    URL = "url"
+    MIN_IO = "min_io"
 
 
 class FileEntity(BaseTable):
@@ -104,14 +101,6 @@ class FileEntity(BaseTable):
         nullable=False
     )
 
-    ext = Column(
-        StringifiedEnum(FileExtEnum),
-        default=FileExtEnum.PNG,
-        nullable=False
-    )
-
-    save_dir = Column(String, nullable=False)
-
     storage = Column(
         StringifiedEnum(FileStorageEnum),
         default=FileStorageEnum.LOCAL,
@@ -124,11 +113,27 @@ class FileEntity(BaseTable):
     user_id = Column(String, ForeignKey("user_entity.id", ondelete="CASCADE"), nullable=False)
     user = relationship("UserEntity")
 
-    def is_ext(self, ext: FileExtEnum) -> bool:
-        if self.ext == ext:
-            return True
-        return False
+    tags = relationship("FileTagEntity", back_populates="file")
 
     def get_stored_file_name(self) -> str:
         # 현재 저장된 파일에 이름 -> 원본 이름과 다르다.
         return f"{self.id}.{self.ext}"
+
+    def add_tags(self, tags: List[str]) -> List['FileTagEntity']:
+        ret = []
+        for tag in tags:
+            new_tag = FileTagEntity(
+                tag=tag,
+                file_id=self.id,
+            )
+            ret.append(new_tag)
+            self.tags.append(new_tag)
+        return ret
+
+
+class FileTagEntity(BaseEntity):
+    __tablename__ = 'file_tag'
+
+    tag: str = Column(String, nullable=False)
+    file_id = Column(String, ForeignKey("file.id", ondelete="CASCADE"), nullable=False)
+    file = relationship("FileEntity")
