@@ -125,31 +125,30 @@ def create_persistence_by_env(env: EnvSettings = EnvSettings.load_env(app_mode='
 
 def create_tables(env: EnvSettings):
     # 사고 방지..
-    if env.APP_MODE == "prod":
-        logger.info("Production mode - Create Tables aborted!")
-        return
+    # if env.APP_MODE == "prod":
+    #     logger.info("Production mode - Create Tables aborted!")
+    #     return
     engine = create_engine_by_env(env)
     BaseTable.metadata.create_all(engine)
 
 
 def drop_tables(env: EnvSettings):
-    if env.APP_MODE == "prod":
-        logger.info("Production mode - Drop Tables aborted!")
-        return
+    drop_truncate_tables(env=env)
+
+
+def truncate_tables(env: EnvSettings):
+    drop_truncate_tables(env=env, only_truncate=True)
+
+
+def drop_truncate_tables(env: EnvSettings, only_truncate: bool = False):
+    # if env.APP_MODE == "prod":
+    #     logger.info("Production mode - Truncate and Drop aborted!")
+    #     return
     engine = create_engine_by_env(env)
-    BaseTable.metadata.drop_all(engine)
-
-
-def truncate_and_drop_tables(env: EnvSettings, engine: Engine):
-    if env.APP_MODE == "prod":
-        logger.info("Production mode - Truncate and Drop aborted!")
-        return
-
     metadata = MetaData()
     metadata.reflect(bind=engine)
     sm = sessionmaker(bind=engine)
     session = sm()
-
     # 모든 테이블 순서대로 튜런케이트 후 드롭
     with engine.connect() as conn:
         trans = conn.begin()  # 트랜잭션 시작
@@ -157,8 +156,9 @@ def truncate_and_drop_tables(env: EnvSettings, engine: Engine):
             # 외래 키 무시 (필요한 경우)
             conn.execute(text('SET session_replication_role = replica;'))
             for table in reversed(metadata.sorted_tables):
-                # logger.info(f"Truncating and dropping table {table.name}...")
                 conn.execute(text(f"TRUNCATE TABLE {table.name} CASCADE;"))
+                if only_truncate:
+                    continue
                 conn.execute(text(f"DROP TABLE {table.name} CASCADE;"))
             conn.execute(text('SET session_replication_role = DEFAULT;'))  # 외래 키 검사를 다시 활성화
             trans.commit()

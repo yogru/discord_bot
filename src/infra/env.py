@@ -13,10 +13,20 @@ if g_app_mode is None:
 
 class EnvSettings(BaseSettings):
     model_config = SettingsConfigDict(env_file=f".env.{g_app_mode}")
+    APP_MODE: str = g_app_mode
 
+    # discord bot
     BOT_KEY: str
-
+    # open ai
     OPEN_AI_KEY: str
+
+    ## db section
+    DATABASE_USERNAME: str
+    DATABASE_PASSWORD: str
+    DATABASE_ADDRESS: str = '127.0.0.1'
+    DATABASE_NAME: str
+    DATABASE_AUTO_COMMIT: bool = False
+    DATABASE_AUTO_FLUSH: bool = False
 
     @staticmethod
     def load_env(app_mode: EnvironmentType = g_app_mode) -> "EnvSettings":
