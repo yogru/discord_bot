@@ -37,6 +37,15 @@ class FileCog(commands.Cog):
         await ctx.send(f"`{filename}` 파일 서버로 저장 되었습니다.")
         os.remove(save_path)
 
+    @commands.command(name='get_url', aliases=['g'], help='{get_url, g} 파일 조회 예)!g 태그1 태그2 태그3')
+    async def get_url(self, ctx, *, user_input: str):
+        tags = user_input.split(' ')
+        if not tags:
+            await ctx.send(f"태그를 지정 해주세요")
+            return
+        urls = file_use_case.get_url(tags=tags)
+        await ctx.send(f"{" ".join(urls)}")
+
 
 async def setup(bot):
     await bot.add_cog(FileCog(bot))
