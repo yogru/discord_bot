@@ -29,7 +29,7 @@ class GPT:
         # Set the OpenAI model (OpenAI version is 0.28)
         completion = client.chat.completions.create(model="gpt-4o",
                                                     messages=self.message,
-                                                    temperature=temperature, max_tokens=1500)
+                                                    temperature=temperature, max_tokens=2048)
         # completion = openai.ChatCompletion.create(model="gpt-4o", messages=self.message, temperature=temperature, max_tokens = 500)
         # Get the answer as a text
         answer = completion.choices[0].message.content
