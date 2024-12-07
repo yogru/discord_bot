@@ -1,16 +1,24 @@
 import discord
 from discord.ext import commands
+from discord.ext.commands import Cog
 
+from src.app.present.bot.help_cog import HelpCog
+from src.app.present.bot.user_cog import UserCog
 from src.dependencies import env, gpt
 
 # 봇 초기화
 intents = discord.Intents.default()
 intents.message_content = True  # 메시지 콘텐츠 접근 허용
-bot = commands.Bot(command_prefix='!', intents=intents)
+bot = commands.Bot(command_prefix='!', intents=intents, help_command=None)
 
 m_dict = {
 
 }
+
+
+@bot.event
+async def on_command_error(ctx, error):
+    await ctx.send(f"에러 발생 했습니다: {str(error)}")
 
 
 # 봇이 준비되었을 때
@@ -58,5 +66,7 @@ async def k(ctx):
     await ctx.send(image_url)
 
 
+bot.add_cog(UserCog(bot))
+bot.add_cog(HelpCog(bot))
 # 봇 실행
 bot.run(env.BOT_KEY)

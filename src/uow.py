@@ -1,3 +1,6 @@
+from sqlalchemy.orm import Session
+
+from src.domain.repository import UserRepository
 from src.infra.db import AbstractUnitOfWork
 
 
@@ -7,8 +10,7 @@ class SqlAlchemyUow(AbstractUnitOfWork):
 
     def __enter__(self):
         self.session = self.session_factory()  # type: Session
-        # repository 등록..
-
+        self.users = UserRepository(self.session)
         return super().__enter__()
 
     def __exit__(self, *args):
