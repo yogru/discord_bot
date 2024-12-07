@@ -27,7 +27,7 @@ class GPT:
         """ returns the answer of the agent"""
         client = OpenAI(api_key=self.env.OPEN_AI_KEY)
         # Set the OpenAI model (OpenAI version is 0.28)
-        completion = client.chat.completions.create(model="gpt-4o",
+        completion = client.chat.completions.create(model="gpt-4o-2024-11-20",
                                                     messages=self.message,
                                                     temperature=temperature, max_tokens=2048)
         # completion = openai.ChatCompletion.create(model="gpt-4o", messages=self.message, temperature=temperature, max_tokens = 500)
