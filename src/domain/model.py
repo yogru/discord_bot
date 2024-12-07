@@ -1,4 +1,5 @@
 from enum import Enum
+from typing import Optional
 
 from sqlalchemy import Column, String, func, DateTime, ForeignKey, Integer
 from sqlalchemy.orm import relationship
@@ -13,6 +14,10 @@ class UserKindEnum(str, Enum):
     CLIENT = 'client'
 
 
+class UserGrantEnum(str, Enum):
+    USE_CHAT_BOT = 'use_chat_bot'
+
+
 class UserEntity(BaseTable):
     __tablename__ = "user_entity"
 
@@ -23,18 +28,39 @@ class UserEntity(BaseTable):
     updated_at = Column(DateTime, server_default=func.now(), onupdate=func.now(), nullable=False)
     grants = relationship("UserGrantEntity", back_populates="user", cascade="all, delete-orphan")
 
+    def check_admin(self):
+        if self.kind == UserKindEnum.ADMIN:
+            return True
+        return False
 
-class UserGrantEnum(str, Enum):
-    USE_CHAT_BOT = 'use_chat_bot'
+    def find_grant(self, grant_enum: UserGrantEnum) -> Optional['UserGrantEntity']:
+        for grant in self.grants:
+            if grant.equal_enum(grant_enum):
+                return grant
+        return None
+
+    def add_grant(self, grant_enum: UserGrantEnum) -> 'UserGrantEntity':
+        found_grant = self.find_grant(grant_enum)
+        if found_grant:
+            raise RuntimeError("이미 존재 하는 권한 입니다.")
+        new_grant = UserGrantEntity(
+            grant=grant_enum,
+            user_id=self.id
+        )
+        self.grants.append(new_grant)
+        return new_grant
 
 
-class UserGrantEntity(BaseTable):
+class UserGrantEntity(BaseEntity):
     __tablename__ = "user_grant"
 
-    id: str = Column(StringifiedEnum(UserGrantEnum), primary_key=True)  # 권한 고유 ID
+    grant: str = Column(StringifiedEnum(UserGrantEnum), primary_key=True)  # 권한 고유 ID
     user_id = Column(String, ForeignKey("user_entity.id", ondelete="CASCADE"), nullable=False)  # UserEntity와 연결
     # UserEntity와의 관계 설정
     user = relationship("UserEntity", back_populates="grants")
+
+    def equal_enum(self, grant_enum: UserGrantEnum):
+        return self.grant == grant_enum
 
 
 ## file ################################################################################################################

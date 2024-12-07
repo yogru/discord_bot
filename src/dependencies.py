@@ -1,3 +1,4 @@
+from src.app.usecase.auth_usecase import AuthUseCase
 from src.app.usecase.user_usecase import UserUseCase
 from src.infra.db import create_persistence_by_env
 from src.infra.env import EnvSettings
@@ -13,4 +14,7 @@ uow = SqlAlchemyUow(session_maker)
 
 user_use_case = UserUseCase(
     uow=uow
+)
+auth_use_case = AuthUseCase(
+    uow=uow,
 )
