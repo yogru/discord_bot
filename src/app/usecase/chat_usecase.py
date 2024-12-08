@@ -19,7 +19,7 @@ class ChatUseCase:
 
     def create_chat(self, user_id: str, question: str):
         gpt = self.get_gpt(user_id)
-        gpt.add_message(role='user', message=question)
+        gpt.add_message(message=question)
         answer = gpt.compilation()
         with self.uow:
             new_llm = LLMQAEntity(
@@ -27,6 +27,6 @@ class ChatUseCase:
                 question=question,
                 answer=answer,
             )
-            self.uow.llm_repo.add_entity(new_llm)
+            self.uow.llm_repo.add(new_llm)
             self.uow.commit()
             return answer

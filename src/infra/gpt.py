@@ -17,11 +17,23 @@ class GPT:
         self.message = []
         self.env = env
 
-    def add_message(self, role, message: str):
+    def _add_message(self, role, message: str):
         """This function is for adding new messages and returns 'True'"""
         temp = {"role": role, "content": message}
         self.message.append(temp)
-        return True
+        return temp
+
+    def add_prompt(self, prompt):
+        return self._add_message(
+            role='system',
+            message=prompt,
+        )
+
+    def add_message(self, message: str):
+        return self._add_message(
+            role='user',
+            message=message,
+        )
 
     def compilation(self, temperature=0.0):
         """ returns the answer of the agent"""
@@ -29,7 +41,7 @@ class GPT:
         # Set the OpenAI model (OpenAI version is 0.28)
         completion = client.chat.completions.create(model="gpt-4o-2024-11-20",
                                                     messages=self.message,
-                                                    temperature=temperature, max_tokens=2048)
+                                                    temperature=temperature, max_tokens=1999)
         # completion = openai.ChatCompletion.create(model="gpt-4o", messages=self.message, temperature=temperature, max_tokens = 500)
         # Get the answer as a text
         answer = completion.choices[0].message.content
