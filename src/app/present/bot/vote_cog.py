@@ -1,7 +1,9 @@
+import discord
+
 from discord.ext import commands
 
 
-class FileCog(commands.Cog):
+class VoteCog(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
@@ -29,7 +31,7 @@ class FileCog(commands.Cog):
         for i, option in enumerate(options):
             description += f"{emoji_list[i]}: {option}\n"
 
-        embed = self.bot.Embed(title="📊 투표", description=description, color=0x00FF00)
+        embed = discord.Embed(title="📊 투표", description=description, color=0x00FF00)
         message = await ctx.send(embed=embed)
 
         # 옵션에 따라 이모지 추가
@@ -38,4 +40,4 @@ class FileCog(commands.Cog):
 
 
 async def setup(bot):
-    await bot.add_cog(FileCog(bot))
+    await bot.add_cog(VoteCog(bot))
