@@ -4,8 +4,8 @@ import discord
 from discord.ext import commands
 from discord.ui import Button, View
 
-from src.dependencies import file_use_case
-from src.domain.model import FileStorageEnum
+from src.dependencies import file_use_case, auth_use_case
+from src.domain.model import FileStorageEnum, UserGrantEnum
 
 
 class FileCog(commands.Cog):
@@ -15,6 +15,11 @@ class FileCog(commands.Cog):
 
     @commands.command(name='upload_file', aliases=['uf'], help='{upload_file, uf} 파일 업로드 기능 예)!uf 태그1 태그2 태그3')
     async def upload_file(self, ctx, *, user_input: str):
+        auth_use_case.check_grant(
+            user_id=ctx.author.name,
+            grant_enum=UserGrantEnum.UPLOAD_IMG_FILE
+        )
+
         tags = user_input.split(' ')
         if not tags:
             await ctx.send(f"태그를 지정 해주세요")

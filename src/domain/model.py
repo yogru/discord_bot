@@ -16,10 +16,13 @@ class UserKindEnum(str, Enum):
 
 class UserGrantEnum(str, Enum):
     USE_CHAT_BOT = 'use_chat_bot'
+    UPLOAD_IMG_FILE = 'upload_img_file'
 
     def get_ko_str(self) -> str:
         if self == UserGrantEnum.USE_CHAT_BOT:
             return "챗봇 사용 권한(use_chat_bot)"
+        if self == UserGrantEnum.UPLOAD_IMG_FILE:
+            return "이미지 업로드 권한(upload_img_file)"
 
 
 class UserEntity(BaseTable):
