@@ -1,7 +1,7 @@
 import discord
 from discord.ext import commands
 
-from src.dependencies import auth_use_case, env
+from src.dependencies import auth_use_case, env, chat_use_case
 from src.domain.model import UserGrantEnum
 from src.infra.gpt import GPT
 
@@ -24,10 +24,11 @@ class ChatCog(commands.Cog):
             user_id=ctx.author.name,
             grant_enum=UserGrantEnum.USE_CHAT_BOT
         )
-        gpt = self.get_gpt(user_input)
-        gpt.add_message(role='user', message=user_input)
-        ret = gpt.compilation()
-        await ctx.send(ret)
+        answer = chat_use_case.create_chat(
+            user_id=ctx.author.name,
+            question=user_input,
+        )
+        await ctx.send(answer)
 
 
 async def setup(bot):

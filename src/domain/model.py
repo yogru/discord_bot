@@ -1,7 +1,7 @@
 from enum import Enum
 from typing import Optional, List
 
-from sqlalchemy import Column, String, func, DateTime, ForeignKey, Integer, Index
+from sqlalchemy import Column, String, func, DateTime, ForeignKey, Integer, Index, Text
 from sqlalchemy.orm import relationship
 
 from src.infra.db import StringifiedEnum, BaseEntity, BaseTable
@@ -144,3 +144,35 @@ class FileTagEntity(BaseEntity):
     tag: str = Column(String, nullable=False)
     file_id = Column(String, ForeignKey("file.id", ondelete="CASCADE"), nullable=False)
     file = relationship("FileEntity")
+
+
+class LLMPromptEntity(BaseEntity):
+    __tablename__ = 'llm_prompt'
+    title: str = Column(String, nullable=False)
+    prompt: str = Column(Text, nullable=False)
+    user_id = Column(String, ForeignKey("user_entity.id", ondelete="CASCADE"), nullable=False)
+    user = relationship("UserEntity")
+
+
+
+class LLMQAEntity(BaseEntity):
+    __tablename__ = 'llm_qa'
+
+    question: str = Column(Text, nullable=False)
+    answer: str = Column(Text, nullable=False)
+    user_id = Column(String, ForeignKey("user_entity.id", ondelete="CASCADE"), nullable=False)
+    user = relationship("UserEntity")
+
+    # LLMPromptQAEntity와의 일대다 관계
+    prompt_qa_list = relationship("LLMPromptQAEntity", back_populates="qa")
+
+
+class LLMPromptQAEntity(BaseEntity):
+    __tablename__ = 'llm_prompt_qa'
+
+    prompt_id = Column(String, ForeignKey("llm_prompt.id", ondelete="CASCADE"), nullable=False)
+    qa_id = Column(String, ForeignKey("llm_qa.id", ondelete="CASCADE"), nullable=False)
+
+    # 관계 설정
+    prompt = relationship("LLMPromptEntity")
+    qa = relationship("LLMQAEntity", back_populates="prompt_qa_list")

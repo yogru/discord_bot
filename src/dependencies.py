@@ -1,4 +1,5 @@
 from src.app.usecase.auth_usecase import AuthUseCase
+from src.app.usecase.chat_usecase import ChatUseCase
 from src.app.usecase.file_usecase import FileUseCase
 from src.app.usecase.user_usecase import UserUseCase
 from src.infra.db import create_persistence_by_env
@@ -25,4 +26,9 @@ user_use_case = UserUseCase(
 )
 auth_use_case = AuthUseCase(
     uow=uow,
+)
+
+chat_use_case = ChatUseCase(
+    uow=uow,
+    env=env
 )

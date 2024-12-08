@@ -3,7 +3,7 @@ from typing import Optional, List, Type
 from sqlalchemy import func, and_
 from sqlalchemy.orm import Session, joinedload
 
-from src.domain.model import UserEntity, FileEntity, FileTagEntity
+from src.domain.model import UserEntity, FileEntity, FileTagEntity, LLMQAEntity
 from src.infra.db import SqlAlchemyBaseRepository
 
 
@@ -38,3 +38,9 @@ class FileRepository(SqlAlchemyBaseRepository):
             .limit(1)
             .all()
         )
+
+
+class LLMRepository(SqlAlchemyBaseRepository):
+    def __init__(self, session: Session):
+        super().__init__(session, LLMQAEntity)
+
