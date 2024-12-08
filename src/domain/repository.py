@@ -49,6 +49,6 @@ class LLMRepository(SqlAlchemyBaseRepository):
             self.session.query(LLMPromptEntity)
             .filter(LLMPromptEntity.user_id == user_id)
             .order_by(LLMPromptEntity.created_at.desc())
-            .limit(3)
+            .limit(1)
             .all()
         )
