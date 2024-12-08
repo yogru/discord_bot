@@ -154,7 +154,6 @@ class LLMPromptEntity(BaseEntity):
     user = relationship("UserEntity")
 
 
-
 class LLMQAEntity(BaseEntity):
     __tablename__ = 'llm_qa'
 
@@ -165,6 +164,17 @@ class LLMQAEntity(BaseEntity):
 
     # LLMPromptQAEntity와의 일대다 관계
     prompt_qa_list = relationship("LLMPromptQAEntity", back_populates="qa")
+
+    def add_prompt_list(self, prompt_id_list: List[str]) -> List['LLMPromptQAEntity']:
+        ret = []
+        for prompt_id in prompt_id_list:
+            new_prompt = LLMPromptQAEntity(
+                prompt_id=prompt_id,
+                qa_id=self.id
+            )
+            self.prompt_qa_list.append(new_prompt)
+            ret.append(new_prompt)
+        return ret
 
 
 class LLMPromptQAEntity(BaseEntity):
