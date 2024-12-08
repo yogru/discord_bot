@@ -1,8 +1,5 @@
 import os
-
-import discord
 from discord.ext import commands
-from discord.ui import Button, View
 
 from src.dependencies import file_use_case, auth_use_case
 from src.domain.model import FileStorageEnum, UserGrantEnum
