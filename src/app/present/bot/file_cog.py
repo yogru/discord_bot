@@ -19,11 +19,20 @@ class FileCog(commands.Cog):
         if not tags:
             await ctx.send(f"태그를 지정 해주세요")
             return
+
         if not ctx.message.attachments:
             await ctx.send("파일을 첨부 하세요")
             return
+
         attachment = ctx.message.attachments[0]
         filename = attachment.filename
+        allowed_extensions = {'.jpg', '.jpeg', '.png', '.gif', '.bmp', '.webp'}
+        file_extension = os.path.splitext(filename)[1].lower()
+        # 파일 확장자 확인
+        if file_extension not in allowed_extensions:
+            await ctx.send(f"이미지 파일만 업로드 가능합니다! (허용된 형식: {', '.join(allowed_extensions)})")
+            return
+
         save_path = f"./downloads/{filename}"
         # 파일 다운로드 및 저장
         await attachment.save(save_path)
