@@ -1,7 +1,7 @@
 from enum import Enum
 from typing import Optional, List
 
-from sqlalchemy import Column, String, func, DateTime, ForeignKey, Integer, Index, Text
+from sqlalchemy import Column, String, func, DateTime, ForeignKey, Integer, Index, Text, UUID
 from sqlalchemy.orm import relationship
 
 from src.infra.db import StringifiedEnum, BaseEntity, BaseTable
@@ -180,8 +180,8 @@ class LLMQAEntity(BaseEntity):
 class LLMPromptQAEntity(BaseEntity):
     __tablename__ = 'llm_prompt_qa'
 
-    prompt_id = Column(String, ForeignKey("llm_prompt.id", ondelete="CASCADE"), nullable=False)
-    qa_id = Column(String, ForeignKey("llm_qa.id", ondelete="CASCADE"), nullable=False)
+    prompt_id = Column(UUID(as_uuid=True), ForeignKey("llm_prompt.id", ondelete="CASCADE"), nullable=False)
+    qa_id = Column(UUID(as_uuid=True), ForeignKey("llm_qa.id", ondelete="CASCADE"), nullable=False)
 
     # 관계 설정
     prompt = relationship("LLMPromptEntity")
