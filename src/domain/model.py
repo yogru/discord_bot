@@ -1,7 +1,7 @@
 from enum import Enum
 from typing import Optional, List
 
-from sqlalchemy import Column, String, func, DateTime, ForeignKey, Integer
+from sqlalchemy import Column, String, func, DateTime, ForeignKey, Integer, Index
 from sqlalchemy.orm import relationship
 
 from src.infra.db import StringifiedEnum, BaseEntity, BaseTable
@@ -133,6 +133,10 @@ class FileEntity(BaseTable):
 
 class FileTagEntity(BaseEntity):
     __tablename__ = 'file_tag'
+    # 인덱스 명시적으로 정의
+    __table_args__ = (
+        Index('ix_file_tag_tag', 'tag'),  # 인덱스 이름과 컬럼 지정
+    )
 
     tag: str = Column(String, nullable=False)
     file_id = Column(String, ForeignKey("file.id", ondelete="CASCADE"), nullable=False)

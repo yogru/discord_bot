@@ -35,6 +35,6 @@ class FileRepository(SqlAlchemyBaseRepository):
                 ])
             )
             .order_by(FileEntity.created_at.desc())
-            .limit(4)
+            .limit(1)
             .all()
         )
