@@ -1,3 +1,5 @@
+from typing import List
+
 from openai import OpenAI
 
 from src.infra.env import EnvSettings
@@ -14,23 +16,27 @@ class GPT:
         # self.version = "gpt-3.5-turbo-16k"  # default gpt-3.5-turbo -> https://platform.openai.com/docs/models/gpt-3-5
         self.version = "gpt-4o"  # default gpt-3.5-turbo -> https://platform.openai.com/docs/models/gpt-3-5
         self.memory = False  # conversation memory 추가 예정 -> langchain 참고
-        self.message = []
+        self.messages = []
         self.env = env
 
-    def _add_message(self, role, message: str):
+    def clear(self):
+        self.messages = []
+
+    def add_messages(self, role, message: str):
         """This function is for adding new messages and returns 'True'"""
         temp = {"role": role, "content": message}
-        self.message.append(temp)
+        self.messages.append(temp)
         return temp
 
-    def add_prompt(self, prompt):
-        return self._add_message(
-            role='system',
-            message=prompt,
-        )
+    def add_prompt_list(self, prompt_list: List[str]):
+        for prompt in prompt_list:
+            self.add_messages(
+                role='system',
+                message=prompt,
+            )
 
-    def add_message(self, message: str):
-        return self._add_message(
+    def add_user_message(self, message: str):
+        return self.add_messages(
             role='user',
             message=message,
         )
@@ -40,7 +46,7 @@ class GPT:
         client = OpenAI(api_key=self.env.OPEN_AI_KEY)
         # Set the OpenAI model (OpenAI version is 0.28)
         completion = client.chat.completions.create(model="gpt-4o-2024-11-20",
-                                                    messages=self.message,
+                                                    messages=self.messages,
                                                     temperature=temperature, max_tokens=1999)
         # completion = openai.ChatCompletion.create(model="gpt-4o", messages=self.message, temperature=temperature, max_tokens = 500)
         # Get the answer as a text

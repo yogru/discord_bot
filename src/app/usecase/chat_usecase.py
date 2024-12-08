@@ -18,9 +18,18 @@ class ChatUseCase:
         return gpt
 
     def create_chat(self, user_id: str, question: str):
+        prompt_list = []
+        with self.uow:
+            prompt_entity_list = self.uow.llm_repo.find_prompt_by_user_id(
+                user_id=user_id
+            )
+            prompt_list = [p.prompt for p in prompt_entity_list]
+
         gpt = self.get_gpt(user_id)
-        gpt.add_message(message=question)
+        gpt.add_prompt_list(prompt_list)
+        gpt.add_user_message(message=question)
         answer = gpt.compilation()
+        gpt.clear()
         with self.uow:
             new_llm = LLMQAEntity(
                 user_id=user_id,
